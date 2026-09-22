@@ -19,7 +19,7 @@ export const menu = {
     {
       id: 'special-biryani-section', category: 'Sunday & Wednesday Special', te: 'బుధ, ఆదివారం స్పెషల్',
       items: [
-        { id: 'special-pot-biryani', en: 'Special Pot Biryani', te: 'స్పెషల్ పాట్ బిర్యానీ', prices: [{ label: 'Price', te: 'ధర', price: 600 }] },
+        { id: 'dampudu-pothu-biryani', en: 'Dampudu Pothu Biryani', te: 'దంపుడు పోతు బిర్యానీ', prices: [{ label: 'Price', te: 'ధర', price: 600 }] },
       ],
     },
     {
