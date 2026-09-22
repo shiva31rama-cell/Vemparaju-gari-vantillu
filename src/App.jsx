@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import './clip.css';
 import { categories, menu } from './data/menu';
 
 const LOGO_PATH = '/assets/brand-logo.png';
@@ -23,7 +24,7 @@ function ItemDetails({ item, language, onClose }) {
 function Splash({ onDone }) {
   const [clipAvailable, setClipAvailable] = useState(true);
   useEffect(() => { const timer = window.setTimeout(onDone, 1800); return () => window.clearTimeout(timer); }, [onDone]);
-  return <div className="brand-splash" aria-label="Vemparajugari Vantillu"><div className="splash-ornament">✦</div><BrandMark /><div className="splash-line" />{clipAvailable && <video className="brand-intro-clip" src={INTRO_CLIP_PATH} autoPlay muted playsInline onError={() => setClipAvailable(false)} aria-hidden="true" /> }<p>VEMPARAJUGARI VANTILLU</p></div>;
+  return <div className="brand-splash" aria-label="Vemparajugari Vantillu"><div className="splash-ornament">✦</div><BrandMark /><div className="splash-line" />{clipAvailable && <video className="brand-intro-clip" src={INTRO_CLIP_PATH} autoPlay muted playsInline onError={() => setClipAvailable(false)} aria-hidden="true" /> }<p>VEMPRAJUGARI VANTILLU</p></div>;
 }
 function Home({ onOpen }) {
   return <section className="home-page"><div className="hero-home"><div className="hero-glow" /><div className="hero-topline">VEMPRAJUGARI VANTILLU</div><BrandMark /><div className="ornament"><span>✦</span></div></div><div className="home-content"><p className="eyebrow">MENU</p><h1>మెనూ <span>Restaurant Menu</span></h1><p className="home-copy">Explore our restaurant food and traditional pickles.</p><div className="experience-grid"><button className="experience-card" onClick={() => onOpen('food')} type="button"><div className="experience-emblem">🍛</div><div className="experience-copy"><strong>రెస్టారెంట్</strong><span>RESTAURANT FOOD</span></div><span className="round-arrow">→</span></button><button className="experience-card" onClick={() => onOpen('pickles')} type="button"><div className="experience-emblem">🫙</div><div className="experience-copy"><strong>పచ్చళ్ళు</strong><span>PICKLES</span></div><span className="round-arrow">→</span></button></div><div className="quick-actions quick-actions-two"><button type="button" onClick={() => onOpen('contact')}><span>☎</span><small>Contact</small></button><button type="button" onClick={() => onOpen('location')}><span>⌖</span><small>Location</small></button></div></div></section>;
