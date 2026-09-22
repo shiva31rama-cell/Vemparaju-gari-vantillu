@@ -17,6 +17,12 @@ function MenuItem({ item, language, onOpen }) {
   return <button className="menu-card" type="button" onClick={() => onOpen(item)}><div className="menu-card-copy"><div><h3>{name}</h3>{language === 'both' && <p>{item.te}</p>}</div><div className="price-stack">{item.prices.map(entry => <div className="price-line" key={entry.label}><span>{language === 'te' ? entry.te : entry.label}</span><Price price={entry.price} /></div>)}</div></div><span className="chevron" aria-hidden="true">›</span></button>;
 }
 function ItemDetails({ item, language, onClose }) {
+  useEffect(() => {
+    if (!item) return undefined;
+    const onKey = event => event.key === 'Escape' && onClose();
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [item, onClose]);
   if (!item) return null;
   const title = language === 'te' ? item.te : item.en;
   return <div className="modal-backdrop" role="presentation" onClick={onClose}><section className="detail-sheet" role="dialog" aria-modal="true" aria-label={title} onClick={event => event.stopPropagation()}><button className="detail-close" type="button" onClick={onClose} aria-label="Close">×</button><p className="eyebrow">VEMPRAJUGARI VANTILLU</p><h2>{title}</h2>{language === 'both' && <p className="detail-telugu">{item.te}</p>}<div className="detail-prices">{item.prices.map(entry => <div className="detail-price" key={entry.label}><span>{language === 'te' ? entry.te : entry.label}</span><Price price={entry.price} /></div>)}</div>{(item.ingredientsEn || item.ingredientsTe) && <div className="ingredients"><p className="section-kicker">INGREDIENTS · పదార్థాలు</p><p>{language === 'te' ? item.ingredientsTe : item.ingredientsEn}</p>{language === 'both' && <small>{item.ingredientsTe}</small>}</div>}</section></div>;
@@ -37,9 +43,11 @@ function MenuPage({ active, setActive, language, setLanguage, search, setSearch,
 function LocationPage({ onBack }) { return <section className="info-page"><header className="app-header"><button className="icon-button" onClick={onBack} type="button" aria-label="Back">←</button><BrandMark compact /><span /></header><div className="info-card"><p className="eyebrow">VEMPRAJUGARI VANTILLU</p><h1>మా స్థానం</h1><span className="info-en">OUR LOCATION</span><div className="map-placeholder"><span>⌖</span><small>Map link can be connected after the owner confirms the exact location.</small></div><h3>Banjara Hills, Hyderabad</h3></div></section>; }
 function ContactPage({ onBack }) { return <section className="info-page"><header className="app-header"><button className="icon-button" onClick={onBack} type="button" aria-label="Back">←</button><BrandMark compact /><span /></header><div className="info-card"><p className="eyebrow">VEMPRAJUGARI VANTILLU</p><h1>సంప్రదించండి</h1><span className="info-en">CONTACT</span><p className="contact-note">The restaurant's verified phone and ordering details will be connected here.</p></div></section>; }
 export default function App() {
-  const [splash, setSplash] = useState(true), [page, setPage] = useState('home'), [active, setActive] = useState('food'), [language, setLanguage] = useState('both'), [search, setSearch] = useState(''), [selectedItem, setSelectedItem] = useState(null);
+  const [splash, setSplash] = useState(true), [page, setPage] = useState('home'), [active, setActive] = useState('food'), [language, setLanguage] = useState(() => { try { return localStorage.getItem('vemparaju-language') || 'both'; } catch { return 'both'; } }), [search, setSearch] = useState(''), [selectedItem, setSelectedItem] = useState(null);
+  useEffect(() => { try { localStorage.setItem('vemparaju-language', language); } catch {} }, [language]);
+  useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }); }, [page, active]);
   const openMenu = section => { setActive(section); setSearch(''); setPage('menu'); };
-  const goHome = () => setPage('home');
+  const goHome = () => { setSelectedItem(null); setPage('home'); };
   if (splash) return <Splash onDone={() => setSplash(false)} />;
   return <div className="app-shell">{page === 'home' && <Home onOpen={target => target === 'location' ? setPage('location') : target === 'contact' ? setPage('contact') : openMenu(target)} />}{page === 'menu' && <MenuPage active={active} setActive={setActive} language={language} setLanguage={setLanguage} search={search} setSearch={setSearch} onHome={goHome} onItem={setSelectedItem} />}{page === 'location' && <LocationPage onBack={goHome} />}{page === 'contact' && <ContactPage onBack={goHome} />}<footer className="site-footer"><BrandMark compact /><p>Vemparajugari Vantillu</p><span>Food · Pickles</span></footer><ItemDetails item={selectedItem} language={language} onClose={() => setSelectedItem(null)} /></div>;
 }
