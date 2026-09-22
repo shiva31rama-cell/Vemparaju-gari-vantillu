@@ -1,2 +1,19 @@
-.brand-intro-clip{display:block;position:relative;z-index:1;width:min(180px,48vw);height:42px;object-fit:cover;border:1px solid rgba(236,213,158,.28);border-radius:8px;opacity:.82;box-shadow:0 8px 25px rgba(0,0,0,.2)}
-@media(max-width:560px){.brand-intro-clip{width:min(150px,46vw);height:36px}}
+.brand-intro-clip {
+  display: block;
+  position: relative;
+  z-index: 1;
+  width: min(180px, 48vw);
+  height: 42px;
+  object-fit: cover;
+  border: 1px solid rgba(236, 213, 158, 0.28);
+  border-radius: 8px;
+  opacity: 0.82;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 560px) {
+  .brand-intro-clip {
+    width: min(150px, 46vw);
+    height: 36px;
+  }
+}
