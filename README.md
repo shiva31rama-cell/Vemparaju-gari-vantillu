@@ -15,6 +15,20 @@ A mobile-first digital menu for **Vemparajugari Vantillu**, designed as one rest
 
 The interface is intentionally clean, royal and heritage-inspired without reproducing the physical menu board as a UI.
 
+## Implemented product features
+
+- Telugu / English / bilingual language switch
+- Language preference persists on the device
+- Menu search
+- Item detail sheet with Escape/backdrop close support
+- Responsive mobile and desktop layout
+- Graceful fallback when the approved logo or optional intro clip is absent
+- PWA manifest and install metadata
+- Production service worker with offline app-shell fallback
+- Neutral fallback app icon until the approved brand asset is supplied
+- Search-engine crawler policy and sitemap
+- Main-branch build validation workflow
+
 ## Language
 
 - Telugu
@@ -79,6 +93,8 @@ npm run preview
 ## Deployment notes
 
 This is a Vite single-page application. Deploy the generated `dist/` directory on a static host with SPA fallback enabled so direct navigation continues to resolve to `index.html`.
+
+For production HTTPS hosting, the service worker caches the app shell and same-origin assets after the first successful load, allowing the menu to remain usable during a temporary connection loss.
 
 ## Final business-data checklist before public launch
 
