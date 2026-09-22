@@ -1,10 +1,10 @@
 export const categories = [
   { id: 'food', label: 'Restaurant', te: 'రెస్టారెంట్', icon: '🍛' },
-  { id: 'pickles', label: 'Pickles', te: 'ఊరగాయలు', icon: '🫙' },
+  { id: 'pickles', label: 'Pickles', te: 'పచ్చళ్ళు', icon: '🫙' },
 ];
 
-// Only owner-verified information belongs in this public menu.
-// Ingredients and unclear pickle names are intentionally not invented from photographs.
+// Public-menu rule: only owner-verified information is published.
+// Do not infer unclear handwritten names, ingredients, pack sizes, or prices.
 export const menu = {
   food: [
     {
@@ -22,7 +22,7 @@ export const menu = {
       id: 'special-biryani-section',
       category: 'Special Biryani',
       te: 'స్పెషల్ బిర్యానీ',
-      note: 'The board indicates a Wednesday & Sunday special. The exact item name must be owner-verified before publication.',
+      note: 'A special biryani is shown on the restaurant board for selected days. The exact item name and schedule are intentionally left unpublished until the owner confirms them.',
       items: [],
     },
     {
@@ -42,8 +42,8 @@ export const menu = {
     {
       id: 'nonveg-pickles',
       category: 'Non-Veg Pickles',
-      te: 'నాన్-వెజ్ ఊరగాయలు',
-      note: 'Product names and prices will be published only after the handwritten board is verified by the owner.',
+      te: 'నాన్-వెజ్ పచ్చళ్ళు',
+      note: 'The photographed pickle board contains the product and price information supplied to us. The public menu will publish each name, pack size, price and ingredient list only after owner verification.',
       items: [],
     },
   ],
