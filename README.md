@@ -1,6 +1,6 @@
 # Vemparajugari Vantillu — Digital Menu
 
-A mobile-first digital menu for **Vemparajugari Vantillu**, designed as one restaurant brand with two offerings: restaurant food and non-veg pickles.
+A mobile-first digital menu for **Vemparajugari Vantillu**, designed as one restaurant brand with two offerings: restaurant food and traditional pickles.
 
 ## Customer experience
 
@@ -19,7 +19,8 @@ The interface is intentionally clean, royal and heritage-inspired without reprod
 
 - Telugu / English / bilingual language switch
 - Language preference persists on the device
-- Menu search
+- Restaurant and pickle sections under the same brand
+- Menu search across English and Telugu names
 - Item detail sheet with Escape/backdrop close support
 - Responsive mobile and desktop layout
 - Graceful fallback when the approved logo or optional intro clip is absent
@@ -28,6 +29,7 @@ The interface is intentionally clean, royal and heritage-inspired without reprod
 - Neutral fallback app icon until the approved brand asset is supplied
 - Search-engine crawler policy and sitemap
 - Main-branch build validation workflow
+- Repository-wide two-space formatting rules through `.editorconfig`
 
 ## Language
 
@@ -38,6 +40,8 @@ The interface is intentionally clean, royal and heritage-inspired without reprod
 ## Information safety
 
 The public menu must contain only restaurant-approved information. Do not invent or infer unclear handwritten names, ingredients, prices, pack sizes, availability, phone numbers, addresses, awards, or historical claims.
+
+The current menu data was transcribed from the restaurant-provided menu photographs. Ingredient and allergen fields remain empty until the restaurant supplies the exact information.
 
 ## Brand assets
 
@@ -59,17 +63,20 @@ The application gracefully falls back if optional assets are not present.
 
 Menu content is kept separately from the React UI in `src/data/menu.js`. This makes future owner/admin management possible without redesigning the customer interface.
 
-Current verified structure:
+Current menu structure:
 
 ```text
 Vemparajugari Vantillu
 ├── Restaurant
 │   ├── Biryanis
-│   ├── Special Biryani (pending exact confirmation)
+│   ├── Sunday & Wednesday Special
 │   └── Sides & Extras
 └── Pickles
-    └── Non-Veg Pickles (product details pending verification)
+    ├── Veg Pickles
+    └── Non-Veg Pickles
 ```
+
+The supplied menu photographs provide names and prices. Exact ingredient/allergen information and any future pack-size variations should be added only after owner confirmation.
 
 ## Run locally
 
@@ -98,16 +105,15 @@ For production HTTPS hosting, the service worker caches the app shell and same-o
 
 ## Final business-data checklist before public launch
 
-- Official logo
+- Official logo asset confirmed
 - Intro clip, if desired
 - Exact menu names in Telugu and English
-- Prices and serving sizes
-- Pickle names and pack sizes
+- Prices and serving sizes cross-checked against the latest owner-approved board
+- Pickle names and pack sizes cross-checked
 - Ingredients / allergen information supplied by the restaurant
 - Real food and pickle photographs
-- Official phone number
-- Exact restaurant address and map link
+- Official phone number and ordering workflow
+- Exact restaurant address and permanent map link
 - Opening hours
-- Ordering/contact workflow
 
 Do not publish placeholder values as if they were official restaurant information.
