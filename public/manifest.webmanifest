@@ -1,0 +1,11 @@
+{
+  "name": "Vemparajugari Vantillu",
+  "short_name": "Vemparajugari",
+  "description": "Vemparajugari Vantillu digital menu",
+  "lang": "te-IN",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#260b0c",
+  "theme_color": "#260b0c",
+  "icons": []
+}
