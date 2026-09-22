@@ -2,11 +2,6 @@ import { useMemo, useState } from 'react';
 import { categories, menu } from './data/menu';
 
 const LOGO_PATH = '/assets/brand-logo.png';
-const demoImages = {
-  biryani: 'https://images.unsplash.com/photo-1631515242808-497c3d5b1b1b?auto=format&fit=crop&w=900&q=80',
-  chicken: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=700&q=80',
-  pickle: 'https://images.unsplash.com/photo-1599909533730-f9d5f3c1f1e8?auto=format&fit=crop&w=700&q=80',
-};
 
 function BrandMark({ compact = false }) {
   const [failed, setFailed] = useState(false);
@@ -25,19 +20,14 @@ function BrandMark({ compact = false }) {
   );
 }
 
-function ImageCard({ src, alt }) {
-  return <img className="food-image" src={src} alt={alt} loading="lazy" />;
-}
-
 function Price({ price }) {
   return <span className="price">₹{price}</span>;
 }
 
-function MenuItem({ item, language, image }) {
+function MenuItem({ item, language, onOpen }) {
   const name = language === 'te' ? item.te : item.en;
   return (
-    <button className="menu-card" type="button">
-      {image && <ImageCard src={image} alt="" />}
+    <button className="menu-card" type="button" onClick={() => onOpen(item)}>
       <div className="menu-card-copy">
         <div>
           <h3>{name}</h3>
@@ -57,6 +47,39 @@ function MenuItem({ item, language, image }) {
   );
 }
 
+function ItemDetails({ item, language, onClose }) {
+  if (!item) return null;
+  const title = language === 'te' ? item.te : item.en;
+  const showBoth = language === 'both';
+  return (
+    <div className="modal-backdrop" role="presentation" onClick={onClose}>
+      <section className="detail-sheet" role="dialog" aria-modal="true" aria-label={title} onClick={(event) => event.stopPropagation()}>
+        <button className="detail-close" type="button" onClick={onClose} aria-label="Close">×</button>
+        <p className="eyebrow">VEMPRAJUGARI VANTILLU</p>
+        <h2>{title}</h2>
+        {showBoth && <p className="detail-telugu">{item.te}</p>}
+
+        <div className="detail-prices">
+          {item.prices.map((entry) => (
+            <div className="detail-price" key={entry.label}>
+              <span>{language === 'te' ? entry.te : entry.label}</span>
+              <Price price={entry.price} />
+            </div>
+          ))}
+        </div>
+
+        {(item.ingredientsEn || item.ingredientsTe) && (
+          <div className="ingredients">
+            <p className="section-kicker">INGREDIENTS · పదార్థాలు</p>
+            {language === 'te' ? <p>{item.ingredientsTe}</p> : <p>{item.ingredientsEn}</p>}
+            {showBoth && language !== 'te' && <small>{item.ingredientsTe}</small>}
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}
+
 function Home({ onOpen }) {
   return (
     <section className="home-page">
@@ -71,17 +94,17 @@ function Home({ onOpen }) {
 
       <div className="home-content">
         <p className="eyebrow">WELCOME</p>
-        <h1>భోజన మెనూ <span>Restaurant Menu</span></h1>
-        <p className="home-copy">Choose what you would like to explore. Food and pickles are presented together under the same Vemparajugari Vantillu identity.</p>
+        <h1>మెనూ <span>Our Menu</span></h1>
+        <p className="home-copy">Explore the restaurant menu and traditional pickle collection, together under one Vemparajugari Vantillu identity.</p>
 
         <div className="experience-grid">
           <button className="experience-card" onClick={() => onOpen('food')} type="button">
-            <div className="experience-image"><ImageCard src={demoImages.biryani} alt="Biryani" /></div>
+            <div className="experience-emblem">🍛</div>
             <div className="experience-copy"><strong>భోజన మెనూ</strong><span>RESTAURANT MENU</span></div>
             <span className="round-arrow">→</span>
           </button>
           <button className="experience-card" onClick={() => onOpen('pickles')} type="button">
-            <div className="experience-image"><ImageCard src={demoImages.pickle} alt="Pickles" /></div>
+            <div className="experience-emblem">🫙</div>
             <div className="experience-copy"><strong>పచ్చళ్ళు</strong><span>PICKLES</span></div>
             <span className="round-arrow">→</span>
           </button>
@@ -97,7 +120,7 @@ function Home({ onOpen }) {
   );
 }
 
-function MenuPage({ active, setActive, language, setLanguage, search, setSearch, onHome }) {
+function MenuPage({ active, setActive, language, setLanguage, search, setSearch, onHome, onItem }) {
   const sections = menu[active];
   const visibleSections = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -119,8 +142,8 @@ function MenuPage({ active, setActive, language, setLanguage, search, setSearch,
       <div className="menu-heading">
         <div>
           <p className="eyebrow">VEMPRAJUGARI VANTILLU</p>
-          <h1>{active === 'pickles' ? 'పచ్చళ్ళు' : 'బిర్యానీలు'}</h1>
-          <span>{active === 'pickles' ? 'PICKLES' : 'BIRYANIS & RESTAURANT FOOD'}</span>
+          <h1>{active === 'pickles' ? 'పచ్చళ్ళు' : 'రెస్టారెంట్ మెనూ'}</h1>
+          <span>{active === 'pickles' ? 'PICKLES' : 'RESTAURANT MENU'}</span>
         </div>
         <div className="language-switch">
           {['both', 'te', 'en'].map((value) => <button key={value} className={language === value ? 'active' : ''} onClick={() => setLanguage(value)} type="button">{value === 'both' ? 'తెలుగు + English' : value === 'te' ? 'తెలుగు' : 'English'}</button>)}
@@ -143,17 +166,20 @@ function MenuPage({ active, setActive, language, setLanguage, search, setSearch,
 
       {visibleSections.map((section) => (
         <div className="menu-section" key={section.id}>
-          <div className="section-title"><div><p>{active === 'pickles' ? 'PICKLES' : 'RESTAURANT'}</p><h2>{section.category}</h2><span>{section.te}</span></div><i /></div>
+          <div className="section-title">
+            <div><p>{active === 'pickles' ? 'PICKLES' : 'RESTAURANT'}</p><h2>{section.category}</h2><span>{section.te}</span></div><i />
+          </div>
+          {section.note && <p className="section-note">{section.note}</p>}
           <div className="menu-list">
-            {section.items.map((item, index) => <MenuItem key={item.id} item={item} language={language} image={active === 'pickles' ? demoImages.pickle : index === 0 ? demoImages.biryani : demoImages.chicken} />)}
+            {section.items.map((item) => <MenuItem key={item.id} item={item} language={language} onOpen={onItem} />)}
           </div>
         </div>
       ))}
 
       {!visibleSections.length && (
         <div className="verified-empty">
-          <strong>Menu details coming soon</strong>
-          <span>Verified items will appear here after the restaurant confirms the names, ingredients and prices.</span>
+          <strong>{active === 'pickles' ? 'Pickle details will be added after verification' : 'No matching items'}</strong>
+          <span>{active === 'pickles' ? 'We will publish the pickle names, pack sizes, prices and ingredients only after the owner confirms them.' : 'Try another menu search.'}</span>
         </div>
       )}
     </section>
@@ -178,9 +204,9 @@ function InfoPage({ type, onBack }) {
           </>
         ) : (
           <>
-            <div className="about-image"><ImageCard src={demoImages.biryani} alt="Restaurant" /></div>
-            <p className="about-copy">వెంబరాజుగారి వంటిల్లు — a place where food, hospitality and tradition come together. Restaurant information shown here will be replaced with the owner's verified wording.</p>
-            <div className="quick-actions"><a href="tel:9949211191"><span>⌕</span><small>Call</small></a><button type="button" onClick={() => onBack()}><span>←</span><small>Menu</small></button></div>
+            <div className="about-panel"><span>✦</span><strong>Vemparajugari Vantillu</strong><small>Restaurant · Pickles · Hospitality</small></div>
+            <p className="about-copy">Food, hospitality and tradition come together under one restaurant identity. Verified restaurant information will be added here as the owner provides it.</p>
+            <div className="quick-actions"><a href="tel:9949211191"><span>⌕</span><small>Call</small></a><button type="button" onClick={onBack}><span>←</span><small>Menu</small></button></div>
           </>
         )}
       </div>
@@ -193,6 +219,7 @@ export default function App() {
   const [active, setActive] = useState('food');
   const [language, setLanguage] = useState('both');
   const [search, setSearch] = useState('');
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const openMenu = (section) => { setActive(section); setSearch(''); setPage('menu'); };
   const goHome = () => setPage('home');
@@ -200,9 +227,10 @@ export default function App() {
   return (
     <div className="app-shell">
       {page === 'home' && <Home onOpen={(target) => target === 'location' || target === 'about' ? setPage(target) : openMenu(target)} />}
-      {page === 'menu' && <MenuPage active={active} setActive={setActive} language={language} setLanguage={setLanguage} search={search} setSearch={setSearch} onHome={goHome} />}
+      {page === 'menu' && <MenuPage active={active} setActive={setActive} language={language} setLanguage={setLanguage} search={search} setSearch={setSearch} onHome={goHome} onItem={setSelectedItem} />}
       {(page === 'location' || page === 'about') && <InfoPage type={page} onBack={goHome} />}
       <footer className="site-footer"><BrandMark compact /><p>Vemparajugari Vantillu</p><span>Food · Pickles · Hospitality</span></footer>
+      <ItemDetails item={selectedItem} language={language} onClose={() => setSelectedItem(null)} />
     </div>
   );
 }
