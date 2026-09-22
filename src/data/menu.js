@@ -3,8 +3,8 @@ export const categories = [
   { id: 'pickles', label: 'Pickles', te: 'ఊరగాయలు', icon: '🫙' },
 ];
 
-// Prices below are placeholders until every handwritten item is verified with the owner.
-// Do not publish unverified names, ingredients, prices or pack sizes.
+// Only verified menu data should be published here.
+// The handwritten pickle names are intentionally left out until the owner verifies them.
 export const menu = {
   food: [
     {
@@ -30,9 +30,7 @@ export const menu = {
       id: 'nonveg-pickles',
       category: 'Non-Veg Pickles',
       te: 'నాన్-వెజ్ ఊరగాయలు',
-      items: [
-        { id: 'pickle-1', en: 'Item name to be verified', te: 'పేరు నిర్ధారించాలి', prices: [{ label: '1 kg', te: '1 కిలో', price: 700 }] },
-      ],
+      items: [],
     },
   ],
 };
