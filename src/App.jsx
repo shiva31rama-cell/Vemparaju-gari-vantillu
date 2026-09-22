@@ -42,7 +42,7 @@ function MenuItem({ item, language, onOpen }) {
           ))}
         </div>
       </div>
-      <span className="chevron">›</span>
+      <span className="chevron" aria-hidden="true">›</span>
     </button>
   );
 }
@@ -51,6 +51,7 @@ function ItemDetails({ item, language, onClose }) {
   if (!item) return null;
   const title = language === 'te' ? item.te : item.en;
   const showBoth = language === 'both';
+
   return (
     <div className="modal-backdrop" role="presentation" onClick={onClose}>
       <section className="detail-sheet" role="dialog" aria-modal="true" aria-label={title} onClick={(event) => event.stopPropagation()}>
@@ -72,7 +73,7 @@ function ItemDetails({ item, language, onClose }) {
           <div className="ingredients">
             <p className="section-kicker">INGREDIENTS · పదార్థాలు</p>
             {language === 'te' ? <p>{item.ingredientsTe}</p> : <p>{item.ingredientsEn}</p>}
-            {showBoth && language !== 'te' && <small>{item.ingredientsTe}</small>}
+            {showBoth && <small>{item.ingredientsTe}</small>}
           </div>
         )}
       </section>
@@ -88,19 +89,17 @@ function Home({ onOpen }) {
         <div className="hero-topline">VEMPRAJUGARI VANTILLU</div>
         <BrandMark />
         <div className="ornament"><span>✦</span></div>
-        <p className="hero-telugu">రుచిలో సంప్రదాయం · ప్రతి భోజనంలో ఆతిథ్యం</p>
-        <p className="hero-english">Traditional flavours · Timeless hospitality</p>
       </div>
 
       <div className="home-content">
-        <p className="eyebrow">WELCOME</p>
-        <h1>మెనూ <span>Our Menu</span></h1>
-        <p className="home-copy">Explore the restaurant menu and traditional pickle collection, together under one Vemparajugari Vantillu identity.</p>
+        <p className="eyebrow">MENU</p>
+        <h1>మెనూ <span>Restaurant Menu</span></h1>
+        <p className="home-copy">Explore restaurant food and pickles from Vemparajugari Vantillu.</p>
 
         <div className="experience-grid">
           <button className="experience-card" onClick={() => onOpen('food')} type="button">
             <div className="experience-emblem">🍛</div>
-            <div className="experience-copy"><strong>భోజన మెనూ</strong><span>RESTAURANT MENU</span></div>
+            <div className="experience-copy"><strong>రెస్టారెంట్</strong><span>RESTAURANT FOOD</span></div>
             <span className="round-arrow">→</span>
           </button>
           <button className="experience-card" onClick={() => onOpen('pickles')} type="button">
@@ -110,10 +109,9 @@ function Home({ onOpen }) {
           </button>
         </div>
 
-        <div className="quick-actions">
-          <a href="tel:9949211191"><span>⌕</span><small>Call</small></a>
+        <div className="quick-actions quick-actions-two">
+          <a href="tel:9949211191"><span>☎</span><small>Call</small></a>
           <button type="button" onClick={() => onOpen('location')}><span>⌖</span><small>Location</small></button>
-          <button type="button" onClick={() => onOpen('about')}><span>◉</span><small>About Us</small></button>
         </div>
       </div>
     </section>
@@ -121,14 +119,16 @@ function Home({ onOpen }) {
 }
 
 function MenuPage({ active, setActive, language, setLanguage, search, setSearch, onHome, onItem }) {
-  const sections = menu[active];
+  const sections = menu[active] || [];
   const visibleSections = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return sections;
-    return sections.map((section) => ({
-      ...section,
-      items: section.items.filter((item) => `${item.en} ${item.te}`.toLowerCase().includes(q)),
-    })).filter((section) => section.items.length);
+    return sections
+      .map((section) => ({
+        ...section,
+        items: section.items.filter((item) => `${item.en} ${item.te}`.toLowerCase().includes(q)),
+      }))
+      .filter((section) => section.items.length);
   }, [active, search, sections]);
 
   return (
@@ -136,7 +136,7 @@ function MenuPage({ active, setActive, language, setLanguage, search, setSearch,
       <header className="app-header">
         <button className="icon-button" onClick={onHome} type="button" aria-label="Back">←</button>
         <BrandMark compact />
-        <button className="icon-button" onClick={() => setSearch(search ? '' : ' ')} type="button" aria-label="Search">⌕</button>
+        <span />
       </header>
 
       <div className="menu-heading">
@@ -145,8 +145,12 @@ function MenuPage({ active, setActive, language, setLanguage, search, setSearch,
           <h1>{active === 'pickles' ? 'పచ్చళ్ళు' : 'రెస్టారెంట్ మెనూ'}</h1>
           <span>{active === 'pickles' ? 'PICKLES' : 'RESTAURANT MENU'}</span>
         </div>
-        <div className="language-switch">
-          {['both', 'te', 'en'].map((value) => <button key={value} className={language === value ? 'active' : ''} onClick={() => setLanguage(value)} type="button">{value === 'both' ? 'తెలుగు + English' : value === 'te' ? 'తెలుగు' : 'English'}</button>)}
+        <div className="language-switch" aria-label="Language">
+          {['both', 'te', 'en'].map((value) => (
+            <button key={value} className={language === value ? 'active' : ''} onClick={() => setLanguage(value)} type="button">
+              {value === 'both' ? 'తెలుగు + English' : value === 'te' ? 'తెలుగు' : 'English'}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -160,8 +164,8 @@ function MenuPage({ active, setActive, language, setLanguage, search, setSearch,
 
       <div className="search-box">
         <span>⌕</span>
-        <input value={search.trim()} onChange={(e) => setSearch(e.target.value)} placeholder="Search menu / మెనూలో వెతకండి" aria-label="Search menu" />
-        {search.trim() && <button onClick={() => setSearch('')} type="button">×</button>}
+        <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search menu / మెనూలో వెతకండి" aria-label="Search menu" />
+        {search && <button onClick={() => setSearch('')} type="button" aria-label="Clear search">×</button>}
       </div>
 
       {visibleSections.map((section) => (
@@ -203,11 +207,11 @@ function InfoPage({ type, onBack }) {
             <p className="phone">9949211191 · 97980 45678</p>
           </>
         ) : (
-          <>
-            <div className="about-panel"><span>✦</span><strong>Vemparajugari Vantillu</strong><small>Restaurant · Pickles · Hospitality</small></div>
-            <p className="about-copy">Food, hospitality and tradition come together under one restaurant identity. Verified restaurant information will be added here as the owner provides it.</p>
-            <div className="quick-actions"><a href="tel:9949211191"><span>⌕</span><small>Call</small></a><button type="button" onClick={onBack}><span>←</span><small>Menu</small></button></div>
-          </>
+          <div className="about-panel">
+            <span>✦</span>
+            <strong>Vemparajugari Vantillu</strong>
+            <small>Restaurant · Pickles</small>
+          </div>
         )}
       </div>
     </section>
@@ -226,10 +230,10 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      {page === 'home' && <Home onOpen={(target) => target === 'location' || target === 'about' ? setPage(target) : openMenu(target)} />}
+      {page === 'home' && <Home onOpen={(target) => target === 'location' ? setPage('location') : openMenu(target)} />}
       {page === 'menu' && <MenuPage active={active} setActive={setActive} language={language} setLanguage={setLanguage} search={search} setSearch={setSearch} onHome={goHome} onItem={setSelectedItem} />}
-      {(page === 'location' || page === 'about') && <InfoPage type={page} onBack={goHome} />}
-      <footer className="site-footer"><BrandMark compact /><p>Vemparajugari Vantillu</p><span>Food · Pickles · Hospitality</span></footer>
+      {page === 'location' && <InfoPage type="location" onBack={goHome} />}
+      <footer className="site-footer"><BrandMark compact /><p>Vemparajugari Vantillu</p><span>Food · Pickles</span></footer>
       <ItemDetails item={selectedItem} language={language} onClose={() => setSelectedItem(null)} />
     </div>
   );
